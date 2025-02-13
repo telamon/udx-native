@@ -1,7 +1,7 @@
 const test = require('brittle')
 const byteSize = require('tiny-byte-size')
 const { makePairs, pipeStreamPairs } = require('../helpers')
-
+const binding = require('../../binding')
 const STREAM_COUNTS = [1, 2, 4, 8]
 const MESSAGE_SIZES = [1024 * 64, 1024]
 const TRANSFER_SIZE = 1024 * 1024 * 64// send 64MB in total
@@ -32,4 +32,5 @@ async function benchmarkThroughput (t, streamCount, multiplexMode, messageSize, 
   })
 
   t.comment(byteSize.perSecond(total, elapsed))
+  t.comment(binding.dbg_call_stats())
 }
