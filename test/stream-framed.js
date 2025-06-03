@@ -43,6 +43,30 @@ test('framed mode, large message', function (t) {
   a.end(buf)
 })
 
+test.solo('framed mode, large message is buffered', async t => {
+  const [a, b] = makeTwoStreams(t, { framed: true })
+  const buf = b4a.alloc(3 + 1024 * 4096 /* 4 MiB */)
+  buf.set([0, 0, 0x40])
+
+  let n = 0
+
+  b.on('data', b => {
+    console.log(b.byteLength)
+    n++
+  })
+
+  a.end(buf)
+
+  await new Promise(resolve => b.on('end', resolve))
+
+  t.is(n, 1, 'emitted once')
+
+  a.destroy()
+  b.destroy()
+
+  console.log('n emits', n)
+})
+
 test('framed mode, several frames', function (t) {
   t.plan(1)
 

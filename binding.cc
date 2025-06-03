@@ -42,7 +42,6 @@ struct udx_napi_t {
 
   uint8_t *read_buf;
   size_t read_buf_free;
-  // std::span<uint8_t> read_buf; // maybe restore.
 
   js_deferred_teardown_t *teardown;
   bool exiting;
@@ -352,6 +351,7 @@ on_udx_stream_read (udx_stream_t *stream, ssize_t read_len, const uv_buf_t *buf)
     } else {
       uint8_t *b = (uint8_t *) buf->base;
       n->frame_len = 3 + (b[0] | (b[1] << 8) | (b[2] << 16));
+      printf("frame len=%zi [%i, %i, %i]\n", n->frame_len, b[0], b[1], b[2]);
     }
   }
 
